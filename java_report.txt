@@ -1,0 +1,64 @@
+The Java classes below provide a modified version of the Contract Net for the buying and selling of books.
+
+The Agent class provides the base for the BuyerAgent which conducts the tender process, and the SellerAgent, instances of which hold books in stock, and respond to a tender request from the buyer.
+
+There is first an initialisation stage (BookTrade) which creates an array of 100 generated titles. The first 80 are listed from Book0 to Book80, the remaining 20 are then duplicates of numbers already in use - to provide the bidding process with a comparison.
+
+The user can then select a title (number) of a book to find, and the number of seller Agent instances to be created.
+
+The BookTrade.java routine follows the following procedure.
+
+It broadly follows the pattern:
+
+1) Buyer issues tender to all Sellers (issueTender)
+2) Buyer issues query to all agents about the book and whether they have it (queryAgent. They respond with either the price or -1 if false.
+3) If a first bid is made, it is automatically listed as the lowestPrice from the LowestPriceBidder. If it follows a previous bid, it will replace the existing lowestPrice if it is lower, otherwise the existing bid remains.
+4) The Buyer then transfers the book from the Seller to the BookHolder.
+
+Unfortunately, the BookTrade routine does not provide full asynchronous control to the buyer in periodically issuing tenders. Nor does the BuyerAgent periodically issue bids. Instead, a request is issued to all SellerAgents, which is then followed up by a query as to whether each has the relevant item in stock.
+
+
+
+
+Class definitions
+
+
+Book
+
+- name: String
+- price: int
++ getName(String name)
++ getPrice(int price)
+
+Agent
+
+- id: String
++ setID(String newID): void
++ getID(String ID)
+
+BuyerAgent
+
+- targetBook: String
+- lowestPriceSeller: SellerAgent
+- lowestPrice: int
+- bookHolder: Book
++ setTarget(String target): void - the book the user wants to buy
++ issueTender(SellerAgent targetAgent): void
++ queryAgent(SellerAgent targetAgent): void
++ reportResult(): void - report the result of the tender
++ transferBook(): void - move book from seller to bookHolder
++ reportTransfer(): void - report end of transaction 
+
+SellerAgent
+- targetBook: String
+- targetBookIndex: int
+- inventory: ArrayList
++ receiveTender(String target): void
++ receiveBook(Book book): void
++ showInventory(String output): void
++ checkInventory() - return price for book after query from buyer
++ buyBook
+
+
+
+
